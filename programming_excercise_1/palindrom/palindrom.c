@@ -38,6 +38,11 @@ int main(int argc, char **argv){
     int start = 0;
     int end = 0;
     sscanf(argv[2], "%d:%d", &start, &end);
+    if(start >= end || start < 0 || end < 0){
+        printf("Invalid range! start: %d, end: %d\n",start,end);
+        return 1;
+    }
+
 
     // Get the first word to check
     char* current_word = strtok(argv[1], ",");
