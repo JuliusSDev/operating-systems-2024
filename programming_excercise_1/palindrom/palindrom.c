@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+/**
+ * Check if a given string is a palindrome
+ * 
+ * @return true if the string is a palindrome, false otherwise
+ */
 bool check_for_palindrome(const char* test) {
     if (test == NULL) {
         return false;
@@ -10,6 +15,8 @@ bool check_for_palindrome(const char* test) {
     int len = strlen(test);
     int i = 0;
     int j = len - 1;
+
+    // start at the beginning and end of the word and compare the corresponding characters
     while (i < j) {
         if (test[i] != test[j]) {
             return false;
