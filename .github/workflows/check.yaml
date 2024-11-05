@@ -1,0 +1,31 @@
+name: C/C++ Check
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # Use the latest version of the checkout action
+
+    - name: Set up GCC and other tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake make build-essential clang clang-format gcc g++ libc++-dev
+
+    - name: Run make check
+      run: |
+        cd programming_excercise_1
+        make all
+        make format-check
+        cd ..
