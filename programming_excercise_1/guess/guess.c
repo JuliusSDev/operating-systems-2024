@@ -3,10 +3,11 @@
 
 #include "guessing.h"
 #define MAX 100000
+#define DIE_ADRESSENDIFFERENZ_HEARAUSGEFUNDEN_IN_DEM_BEIDE_ADRESSEN_AUSGEGEBEN_UND_DANN_VONEINANDER_ABGEZOGEN 107
 static unsigned int target_test;
 
 unsigned int guess_the_number(void) {
-    return (unsigned int)*((&target_test) - 107);
+    return (unsigned int)*((&target_test) - DIE_ADRESSENDIFFERENZ_HEARAUSGEFUNDEN_IN_DEM_BEIDE_ADRESSEN_AUSGEGEBEN_UND_DANN_VONEINANDER_ABGEZOGEN);
 
 #if 0
     int upper_bound = MAX;
