@@ -1,15 +1,14 @@
-#include "guessing.h"
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "guessing.h"
 #define MAX 100000
 static unsigned int target_test;
 
-
 unsigned int guess_the_number(void) {
-    return (unsigned int)*((&target_test)-107);
+    return (unsigned int)*((&target_test) - 107);
 
-
-    #if 0
+#if 0
     int upper_bound = MAX;
     int lower_bound = test;
     int guess = MAX / 2;
@@ -31,5 +30,5 @@ unsigned int guess_the_number(void) {
     } while (evaluation != 0);
 
     return guess;  // Return the correct number
-    #endif
+#endif
 }
