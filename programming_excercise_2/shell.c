@@ -1,3 +1,6 @@
+#include <bits/posix1_lim.h>
+#include <limits.h>
+#include <linux/limits.h>
 #include <unistd.h>
 #include <pwd.h>
 #include <stdio.h>
@@ -20,32 +23,41 @@ void print_shell_prefix(void){
 
 	const char* user_name = get_user_name();
 
-	char host_name[128];
-	if(gethostname(host_name, 128)){
+	char host_name[HOST_NAME_MAX];
+	if(gethostname(host_name, HOST_NAME_MAX)){
 		perror("couldn't get hostname\n");
 	}
 
 
-	char cwd[256];
-	getcwd(cwd, 256);
+	char cwd[PATH_MAX];
+	getcwd(cwd, PATH_MAX);
 
 	printf("%s@%s:~%s$ ", user_name, host_name, cwd);
 }
 
-void get_shell_input(void){
-	char command[128];
-	char args[128];
-	scanf("%127s %127s", command, args);
-	printf("Befehl: %s\nArgument: %s\n",command,args);
+void get_shell_input(char* command, char* args){
+	if(scanf("%127s %127s", command, args) == 1){
+		args = "";
+	}
 }
 
-void get_new_input(void){
+void get_new_input(char* command, char* args){
 	print_shell_prefix();
-	get_shell_input();
+	get_shell_input(command, args);
+}
+
+void execute_command(char* command, char* args){
+	execlp(command,args);
+
 }
 
 int main (int argc, char* argv[]){
-	get_new_input();
+	char command[128];
+	char args[128];
+	get_new_input(command, args);
+
+	// printf("Befehl: %s\nArgument: %s\n",command,args);
+	execute_command(command, args);
 	return 0;
 
 }
