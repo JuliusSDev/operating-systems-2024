@@ -23,7 +23,10 @@ int main (int argc, char* argv[]){
 		return 1;
 	}
 
-	printf("%s@%s: ", user_name, host_name);
+	char cwd[256];
+	getcwd(cwd, 256);
+
+	printf("%s@%s:~%s$ ", user_name, host_name, cwd);
 
 	char command[128];
 	char args[128];
