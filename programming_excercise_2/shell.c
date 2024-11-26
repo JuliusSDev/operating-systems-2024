@@ -65,8 +65,17 @@ void execute_command(char* command, char* args){
 	}
 	
 	execlp(command, command, args, NULL);
+	perror("execlp failed");
 
 }
+
+bool is_shell_command(char* command){
+	if(strcmp(command, "cd") == 0){
+		return true;
+	}
+	return false;
+}
+
 
 int main (int argc, char* argv[]){
 	 // Set up the SIGINT handler
@@ -87,16 +96,25 @@ int main (int argc, char* argv[]){
 			perror("fork failed");
 			return 1;
 		} else if (pid == 0) {
-
-			// Child process
-			execute_command(command, args);
+			if (is_shell_command(command))
+			{
+				if(strcmp(command, "cd") == 0){
+					if(chdir(args) == -1){
+						perror("cd failed");
+					}
+					continue;
+				}
+			} else {
+				// Child process
+				execute_command(command, args);
+			}
 			//perror("execlp failed");
 			return 1;
 		} else {
 			// Parent process
 			int status;
 			waitpid(pid, &status, 0);
-			//printf("Exitstatus: %d\n", status);
+			printf("Exitstatus: %d\n", status);
 		}
 	}
 	return 0;
