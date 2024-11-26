@@ -4,7 +4,18 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <string.h>
+#include <stdbool.h>
 
+#include <signal.h>
+
+// Signal handler for SIGINT (Ctrl+C)
+void handle_sigint(int sig) {
+    printf("\nExiting shell...\n");
+    // Perform any cleanup tasks here if needed
+    _exit(0); // Exit immediately
+}
 
 const char* get_user_name(void){
 	struct passwd *p;
@@ -47,17 +58,47 @@ void get_new_input(char* command, char* args){
 }
 
 void execute_command(char* command, char* args){
-	execlp(command,args);
+	printf("command: %s\n", command);
+	if(command == NULL){
+		perror("command is NULL\n");
+		return;
+	}
+	
+	execlp(command, command, args, NULL);
 
 }
 
 int main (int argc, char* argv[]){
+	 // Set up the SIGINT handler
+    struct sigaction sa;
+    sa.sa_handler = handle_sigint;
+    sa.sa_flags = SA_RESTART; // Restart interrupted system calls
+    sigaction(SIGINT, &sa, NULL);
+
 	char command[128];
 	char args[128];
-	get_new_input(command, args);
 
-	// printf("Befehl: %s\nArgument: %s\n",command,args);
-	execute_command(command, args);
+	while (1) {
+		get_new_input(command, args);
+
+		pid_t pid = fork();
+		// printf("pid: %d\n", pid);
+		if (pid == -1) {
+			perror("fork failed");
+			return 1;
+		} else if (pid == 0) {
+
+			// Child process
+			execute_command(command, args);
+			//perror("execlp failed");
+			return 1;
+		} else {
+			// Parent process
+			int status;
+			waitpid(pid, &status, 0);
+			//printf("Exitstatus: %d\n", status);
+		}
+	}
 	return 0;
 
 }
